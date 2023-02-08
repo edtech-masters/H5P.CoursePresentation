@@ -434,6 +434,21 @@ CoursePresentation.prototype.attach = function ($container) {
   if (this.previousState && this.previousState.progress) {
     this.jumpToSlide(this.previousState.progress, false, null, false, true);
   }
+
+  this.navigateToSlideIfPresentInQueryParam();
+};
+
+/**
+ * Check url and query param and navigate to slide based on slide number
+ */
+CoursePresentation.prototype.navigateToSlideIfPresentInQueryParam = function() {
+  const queryParams = (new URL(document.location)).searchParams;
+  if (queryParams && queryParams.has('slideNumber')) {
+    const slideNumber = queryParams.get('slideNumber');
+    if (slideNumber > 0 && params.presentation.slides.length >= slideNumber) {
+      this.jumpToSlide((slideNumber - 1), false, null, false, true);
+    }
+  }
 };
 
 /**
