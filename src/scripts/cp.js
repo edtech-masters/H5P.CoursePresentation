@@ -445,7 +445,7 @@ CoursePresentation.prototype.navigateToSlideIfPresentInQueryParam = function() {
   const queryParams = (new URL(document.location)).searchParams;
   if (queryParams && queryParams.has('slideNumber')) {
     const slideNumber = queryParams.get('slideNumber');
-    if (slideNumber > 0 && params.presentation.slides.length >= slideNumber) {
+    if (slideNumber > 0 && this.presentation.slides.length >= slideNumber) {
       this.jumpToSlide((slideNumber - 1), false, null, false, true);
     }
   }
