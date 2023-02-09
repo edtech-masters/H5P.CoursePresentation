@@ -49,8 +49,8 @@ let CoursePresentation = function (params, id, extras) {
     this.title = (extras.metadata && extras.metadata.title) ? extras.metadata.title : 'Course Presentation';
   }
 
-  this.currentSlideIndex = (this.previousState && this.previousState.progress) ? this.previousState.progress : 0;
-
+  this.queryParamSlideNumber = this.getSlideNumberIfPresentInQueryParam();
+  this.currentSlideIndex = this.queryParamSlideNumber !== undefined ? this.queryParamSlideNumber : ((this.previousState && this.previousState.progress) ? this.previousState.progress : 0);
   this.presentation.keywordListEnabled = (params.presentation.keywordListEnabled === undefined ? true : params.presentation.keywordListEnabled);
 
   this.l10n = $.extend({
@@ -131,7 +131,7 @@ let CoursePresentation = function (params, id, extras) {
 
   this.keywordMenu = new KeywordsMenu({
     l10n : this.l10n,
-    currentIndex: this.previousState !== undefined ? this.previousState.progress : 0
+    currentIndex: this.queryParamSlideNumber !== undefined ? this.queryParamSlideNumber : (this.previousState !== undefined ? this.previousState.progress : 0)
   });
 
   // Set override for all actions
@@ -431,24 +431,25 @@ CoursePresentation.prototype.attach = function ($container) {
 
   new SlideBackground(this);
 
-  if (this.previousState && this.previousState.progress) {
+  if (this.queryParamSlideNumber !== undefined) {
+    this.jumpToSlide(this.queryParamSlideNumber, false, null, false, true);
+  } else if (this.previousState && this.previousState.progress) {
     this.jumpToSlide(this.previousState.progress, false, null, false, true);
   }
-
-  this.navigateToSlideIfPresentInQueryParam();
 };
 
 /**
  * Check url and query param and navigate to slide based on slide number
  */
-CoursePresentation.prototype.navigateToSlideIfPresentInQueryParam = function() {
+CoursePresentation.prototype.getSlideNumberIfPresentInQueryParam = function() {
   const queryParams = (new URL(document.location)).searchParams;
   if (queryParams && queryParams.has('slideNumber')) {
     const slideNumber = queryParams.get('slideNumber');
     if (slideNumber > 0 && this.presentation.slides.length >= slideNumber) {
-      this.jumpToSlide((slideNumber - 1), false, null, false, true);
+      return slideNumber - 1;
     }
   }
+  return undefined;
 };
 
 /**
