@@ -41,7 +41,8 @@ let CoursePresentation = function (params, id, extras) {
     this.previousState = extras.previousState;
   }
 
-  this.currentSlideIndex = (this.previousState && this.previousState.progress) ? this.previousState.progress : 0;
+  this.queryParamSlideNumber = this.getSlideNumberIfPresentInQueryParam();
+  this.currentSlideIndex = this.queryParamSlideNumber !== undefined ? this.queryParamSlideNumber : ((this.previousState && this.previousState.progress) ? this.previousState.progress : 0);
 
   this.presentation.keywordListEnabled = (params.presentation.keywordListEnabled === undefined ? true : params.presentation.keywordListEnabled);
 
@@ -120,7 +121,7 @@ let CoursePresentation = function (params, id, extras) {
 
   this.keywordMenu = new KeywordsMenu({
     l10n : this.l10n,
-    currentIndex: this.previousState !== undefined ? this.previousState.progress : 0
+    currentIndex: this.queryParamSlideNumber !== undefined ? this.queryParamSlideNumber : (this.previousState !== undefined ? this.previousState.progress : 0)
   });
 
   // Set override for all actions
@@ -420,12 +421,29 @@ CoursePresentation.prototype.attach = function ($container) {
 
   new SlideBackground(this);
 
-  if (this.previousState && this.previousState.progress) {
+  if (this.queryParamSlideNumber !== undefined) {
+    this.jumpToSlide(this.queryParamSlideNumber, false, null, false, true);
+  } else if (this.previousState && this.previousState.progress) {
     this.jumpToSlide(this.previousState.progress);
   } else if(this.currentSlideIndex === 0) { // handle read only activities XAPI event for initial load
       this.handleConsumedEventForReadOnly(this.currentSlideIndex);
   }
 };
+
+/**
+ * Check url and query param and navigate to slide based on slide number
+ */
+CoursePresentation.prototype.getSlideNumberIfPresentInQueryParam = function() {
+  const queryParams = (new URL(document.location)).searchParams;
+  if (queryParams && queryParams.has('slideNumber')) {
+    const slideNumber = queryParams.get('slideNumber');
+    if (slideNumber > 0 && this.presentation.slides.length >= slideNumber) {
+      return slideNumber - 1;
+    }
+  }
+  return undefined;
+};
+
 
 /**
  * Check if a node or one of its parents has a particular tag name.
