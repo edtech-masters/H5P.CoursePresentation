@@ -113,6 +113,9 @@ let CoursePresentation = function (params, id, extras) {
     this.showSummarySlideRetryButton = params.override.summarySlideRetryButton !== undefined
       ? params.override.summarySlideRetryButton : true;
 
+    this.enableEmbedOption = !!params.override.enableEmbedOption;
+    this.enableExportOption = !!params.override.enableExportOption;
+
     if (!!params.override.social) {
       this.enableTwitterShare = !!params.override.social.showTwitterShare;
       this.enableFacebookShare = !!params.override.social.showFacebookShare;
@@ -2335,6 +2338,20 @@ CoursePresentation.prototype.triggerConsumedEventForReadOnly = function (library
  */
 CoursePresentation.prototype.getTitle = function () {
   return H5P.createTitle(this.title);
+};
+
+/* populate display option from behaviour
+ * later used in h5p.js from this instance and override display options
+ */
+CoursePresentation.prototype.getDisplayOptions = function () {
+  return {
+    embed: this.enableEmbedOption !== undefined ? this.enableEmbedOption
+        : false,
+    export: this.enableExportOption !== undefined ? this.enableExportOption
+        : false,
+    copy: this.enableExportOption !== undefined ? this.enableExportOption
+        : false
+  };
 };
 
 export default CoursePresentation;
