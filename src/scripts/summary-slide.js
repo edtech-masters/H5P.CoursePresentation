@@ -287,10 +287,11 @@ const SummarySlide = (function () {
     // Get task description, task name or identify multiple tasks:
     var slideDescription, action;
     var slideElements = self.cp.slides[slideScoresSlide.slide - 1].elements;
-    if (slideScoresSlide.indexes.length > 1) {
+    /*if (slideScoresSlide.indexes.length > 1) {
       slideDescription = self.cp.l10n.summaryMultipleTaskText;
     }
-    else if (slideElements[slideScoresSlide.indexes[0]] !== undefined && slideElements[0]) {
+    else*/
+    if (slideElements[slideScoresSlide.indexes[0]] !== undefined && slideElements[0]) {
       action = slideElements[slideScoresSlide.indexes[0]].action;
       if (typeof self.cp.elementInstances[slideScoresSlide.slide - 1][slideScoresSlide.indexes[0]].getTitle === 'function') {
         slideDescription = self.cp.elementInstances[slideScoresSlide.slide - 1][slideScoresSlide.indexes[0]].getTitle();
