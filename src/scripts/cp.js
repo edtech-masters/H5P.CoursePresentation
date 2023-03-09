@@ -439,6 +439,9 @@ CoursePresentation.prototype.attach = function ($container) {
   } else if (this.previousState && this.previousState.progress) {
     this.jumpToSlide(this.previousState.progress, false, null, false, true);
   }
+
+  // post slide change to parent
+  this.postSlideChangeToParent();
 };
 
 /**
@@ -2352,6 +2355,15 @@ CoursePresentation.prototype.getDisplayOptions = function () {
     copy: this.enableExportOption !== undefined ? this.enableExportOption
         : false
   };
+};
+
+CoursePresentation.prototype.postSlideChangeToParent = function () {
+  this.on('changedSlide', function (event) {
+    const message = {
+      currentSlide: (event.data + 1)
+    };
+    window.parent.postMessage(message, "*");
+  });
 };
 
 export default CoursePresentation;
