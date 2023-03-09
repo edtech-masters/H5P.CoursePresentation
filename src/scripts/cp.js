@@ -428,6 +428,9 @@ CoursePresentation.prototype.attach = function ($container) {
   } else if(this.currentSlideIndex === 0) { // handle read only activities XAPI event for initial load
       this.handleConsumedEventForReadOnly(this.currentSlideIndex);
   }
+
+  // post slide change to parent
+  this.postSlideChangeToParent();
 };
 
 /**
@@ -2253,5 +2256,14 @@ CoursePresentation.prototype.triggerConsumedEventForReadOnly = function (library
   }
 };
 
+
+CoursePresentation.prototype.postSlideChangeToParent = function () {
+  this.on('changedSlide', function (event) {
+    const message = {
+      currentSlide: (event.data + 1)
+    };
+    window.parent.postMessage(message, "*");
+  });
+};
 
 export default CoursePresentation;
