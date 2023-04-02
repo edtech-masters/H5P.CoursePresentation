@@ -580,6 +580,11 @@
   content: "\f1c5";
 }
 
+.h5p-course-presentation .h5p-memorygame-button:before {
+  font-family: 'H5PFontAwesome4';
+  content: "\f248";
+}
+
 .h5p-course-presentation .h5p-no-solution {
   color: #888888;
 }
