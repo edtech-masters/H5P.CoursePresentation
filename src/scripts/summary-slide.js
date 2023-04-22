@@ -39,6 +39,7 @@ const SummarySlide = (function () {
 
     // Get scores and updated html for summary slide
     var slideScores = that.cp.getSlideScores(noJump);
+    that.removeSlidesIfIgnoreInSummary(slideScores);
     var htmlText = that.outputScoreStats(slideScores);
     $(htmlText).appendTo(that.$summarySlide);
 
@@ -300,9 +301,9 @@ const SummarySlide = (function () {
 
         // Remove major, minor version and h5p prefix, Split on uppercase
         var humanReadableLibrary = action.library
-          .split(' ')[0]
-          .split('.')[1]
-          .split(/(?=[A-Z])/);
+        .split(' ')[0]
+        .split('.')[1]
+        .split(/(?=[A-Z])/);
         var humanReadableString = '';
 
         // Make library human readable
@@ -323,6 +324,31 @@ const SummarySlide = (function () {
       }
     }
     return slideDescription;
+  };
+
+  SummarySlide.prototype.removeSlidesIfIgnoreInSummary = function (slideScores) {
+    if (!slideScores) {
+      return;
+    }
+    for (var i = 0; i < slideScores.length; i += 1) {
+      var isIgnoreSlideInSummary = this.isIgnoreSlideInSummary(slideScores[i]);
+      if (isIgnoreSlideInSummary) {
+        slideScores.splice(i, 1);
+      }
+    }
+  };
+
+  SummarySlide.prototype.isIgnoreSlideInSummary = function (slideScoresSlide) {
+    var self = this;
+
+    var isIgnoreSlideInSummary = false;
+    var slideElements = self.cp.slides[slideScoresSlide.slide - 1].elements;
+    if (slideElements[slideScoresSlide.indexes[0]] !== undefined && slideElements[0]) {
+      if (typeof self.cp.elementInstances[slideScoresSlide.slide - 1][slideScoresSlide.indexes[0]].isIgnoreInSummarySlide === 'function') {
+        isIgnoreSlideInSummary = self.cp.elementInstances[slideScoresSlide.slide - 1][slideScoresSlide.indexes[0]].isIgnoreInSummarySlide();
+      }
+    }
+    return isIgnoreSlideInSummary;
   };
 
   /**
