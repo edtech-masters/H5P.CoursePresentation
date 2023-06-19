@@ -238,7 +238,7 @@ const SummarySlide = (function () {
           '</td>' +
           '<td class="h5p-td h5p-summary-score-bar">' +
             '<p class="hidden-but-read">' + slidePercentageScore + '%' + '</p>' +
-            '<p>' + slideScores[i].score + '<span>/</span>' + slideScores[i].maxScore + '</p>' +
+            '<p>' + ( this.isAutoGradingEnabled(slideScores[i]) ? 'Auto Grading' : ( slideScores[i].score + '<span>/</span>' + slideScores[i].maxScore)) + '</p>' +
           '</td>' +
         '</tr>';
     }
@@ -349,6 +349,17 @@ const SummarySlide = (function () {
       }
     }
     return isIgnoreSlideInSummary;
+  };
+
+  SummarySlide.prototype.isAutoGradingEnabled = function (slideScoresSlide) {
+    var self = this;
+    var slideElements = self.cp.slides[slideScoresSlide.slide - 1].elements;
+    if (slideElements[slideScoresSlide.indexes[0]] !== undefined && slideElements[0] &&
+        slideElements[0].hasOwnProperty("action") && slideElements[0].action.hasOwnProperty("library")) {
+      const library = slideElements[0].action.library.split(' ')[0];
+      return this.cp.autoGrading && this.cp.autoGrading[library] === true;
+    }
+    return false;
   };
 
   /**
@@ -516,6 +527,9 @@ const SummarySlide = (function () {
     var totalMaxScore = 0;
     var i;
     for (i = 0; i < slideScores.length; i += 1) {
+      if (this.isAutoGradingEnabled(slideScores[i])) {
+        continue;
+      }
       // Get percentage score for slide
       totalScore += slideScores[i].score;
       totalMaxScore += slideScores[i].maxScore;

@@ -37,6 +37,7 @@ let CoursePresentation = function (params, id, extras) {
   this.standalone = true;
   this.isReportingEnabled = false;
   this.popups = {};
+  this.autoGrading = [];
 
   if (extras.cpEditor) {
     this.editor = extras.cpEditor;
@@ -132,6 +133,9 @@ let CoursePresentation = function (params, id, extras) {
     }
   }
 
+  if (params.override) {
+    this.autoGrading = params.override.autoGrading;
+  }
   this.keywordMenu = new KeywordsMenu({
     l10n : this.l10n,
     currentIndex: this.queryParamSlideNumber !== undefined ? this.queryParamSlideNumber : (this.previousState !== undefined ? this.previousState.progress : 0)
