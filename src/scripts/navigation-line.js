@@ -301,7 +301,7 @@ const NavigationLine = (function ($) {
       }
     });
 
-    if (this.cp.presentation.keywordListAlwaysShow || !this.cp.initKeywords) {
+    if (this.cp.presentation.keywordListAlwaysShow || !this.cp.initKeywords || this.cp.editor === undefined) {
       this.cp.$keywordsButton.hide();
     }
 

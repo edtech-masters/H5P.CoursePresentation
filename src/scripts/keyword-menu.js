@@ -12,7 +12,9 @@ import { jQuery as $, EventDispatcher } from './globals';
 /**
  * @typedef {object} KeywordMenuItemConfig
  * @property {string} title
+ * @property {number} totalGrades
  * @property {string} subtitle
+ * @property {boolean} gradedManually
  * @property {number} index
  */
 /**
@@ -143,7 +145,9 @@ export default class KeywordMenu {
    * @param {KeywordMenuItemConfig} config
    */
   applyConfigToMenuItemElement(element, config) {
-    element.innerHTML = `<div class="h5p-keyword-subtitle">${config.subtitle}</div><span class="h5p-keyword-title">${config.title}</span>`;
+    var manuallyGradedCheckbox = config.gradedManually ? '<div class="graded-manually"><label for="graded-manually"><input type="checkbox" checked id="graded-manually-checkbox">Grade Manually</label></div>'
+        : '<div class="graded-manually"><label for="graded-manually"><input type="checkbox" id="graded-manually-checkbox">Grade Manually</label></div>';
+    element.innerHTML = `<div class="h5p-keyword-subtitle">${config.subtitle}</div><span class="h5p-keyword-title">${config.title}</span><span class="h5p-total-grades">${config.totalGrades}</span>` + manuallyGradedCheckbox;
     element.dataset.index = config.index;
   }
 

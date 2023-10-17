@@ -518,10 +518,29 @@ CoursePresentation.prototype.getKeywordMenuConfig = function () {
   return this.slides
     .map((slide, index) => ({
       title: this.createSlideTitle(slide),
+      totalGrades: this.getTotalGrades(slide),
+      gradedManually: this.getGradedManually(slide),
       subtitle: `${this.l10n.slide} ${index + 1}`,
       index
     }))
     .filter(config => config.title !== KEYWORD_TITLE_SKIP);
+};
+
+
+/**
+ * Returns the slide title, or "No title" if inside editor without title
+ *
+ * @return {string|null}
+ */
+CoursePresentation.prototype.getTotalGrades = function (slide) {
+  return (slide.hasOwnProperty("totalGrades") && slide.totalGrades.trim() !== '') ? slide.totalGrades : 'No Total Grades';
+};
+
+/**
+ * Returns the slide title, or "No title" if inside editor without title
+ */
+CoursePresentation.prototype.getGradedManually = function (slide) {
+  return (slide.hasOwnProperty("gradedManually") && slide.gradedManually) ? slide.gradedManually : false;
 };
 
 /**
