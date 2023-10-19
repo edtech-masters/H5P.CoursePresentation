@@ -2135,6 +2135,8 @@ CoursePresentation.prototype.showSolutions = function () {
       }
     }
   }
+
+  this.updateSlideScoresForManuallyGraded(slideScores);
   if (hasScores) {
     return slideScores;
   }
@@ -2161,9 +2163,10 @@ CoursePresentation.prototype.getSlideScores = function (noJump) {
       var slideScore = 0;
       var slideMaxScore = 0;
       var indexes = [];
+
       for (var j = 0; j < this.slidesWithSolutions[i].length; j++) {
         var elementInstance = this.slidesWithSolutions[i][j];
-       
+
         if (elementInstance.getMaxScore !== undefined) {
           // console.log(elementInstance);
           slideMaxScore += elementInstance.getMaxScore();
@@ -2198,7 +2201,10 @@ CoursePresentation.prototype.getSlideScores = function (noJump) {
         slide: (i + 1),
         score: slideScore,
         maxScore: slideMaxScore
+
       });
+
+      this.updateSlideScoresForManuallyGraded(slideScores);
     }
   }
   if (hasScores) {
@@ -2206,7 +2212,18 @@ CoursePresentation.prototype.getSlideScores = function (noJump) {
     return slideScores;
   }
 };
-
+CoursePresentation.prototype.updateSlideScoresForManuallyGraded = function (slideScores) {
+  var self = this;
+  slideScores.forEach(slideScore => {
+   const slideIndex = (slideScore.slide - 1);
+   const slide = self.slides[slideIndex];
+   if(slide.hasOwnProperty("gradedManually") && slide.gradedManually) {
+     slideScore.gradedManually = true;
+     slideScore.score = 0;
+     slideScore.maxScore = (slide.hasOwnProperty("totalGrades") && !isNaN(parseInt(slide.totalGrades))) ? parseInt(slide.totalGrades) : 0;
+   }
+ });
+};
 /**
  * Gather copyright information for the current content.
  *

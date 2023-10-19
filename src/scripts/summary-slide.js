@@ -201,6 +201,13 @@ const SummarySlide = (function () {
     }
   };
 
+  SummarySlide.prototype.getSlideScore = function(slideScore) {
+    if(slideScore.hasOwnProperty("gradedManually") && slideScore.gradedManually) {
+      return '---';
+    }
+    return slideScore.score;
+  };
+
   /**
    * Gets html for summary slide.
    *
@@ -238,7 +245,7 @@ const SummarySlide = (function () {
           '</td>' +
           '<td class="h5p-td h5p-summary-score-bar">' +
             '<p class="hidden-but-read">' + slidePercentageScore + '%' + '</p>' +
-            '<p>' + ( this.isAutoGradingEnabled(slideScores[i]) ? 'Manual Grading' : ( slideScores[i].score + '<span>/</span>' + slideScores[i].maxScore)) + '</p>' +
+            '<p>' + ( this.isAutoGradingEnabled(slideScores[i]) ? 'Manual Grading' : ( this.getSlideScore(slideScores[i])+ '<span>/</span>' + slideScores[i].maxScore)) + '</p>' +
           '</td>' +
         '</tr>';
     }
